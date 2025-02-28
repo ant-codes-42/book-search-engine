@@ -18,6 +18,16 @@ mutation CreateUser($input: UserInput!) {
         user {
             _id
             username
+            email
+            bookCount
+            savedBooks {
+                authors
+                bookId
+                description
+                image
+                link
+                title
+            }
         }
     token
     }
