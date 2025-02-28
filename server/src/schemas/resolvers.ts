@@ -1,11 +1,6 @@
 import { User } from '../models/index.js';
 import { signToken, AuthenticationError } from '../services/auth.js';
 
-interface IUserArgs {
-    id?: string;
-    username?: string;
-}
-
 interface CreateUserArgs {
     input: {
         username: string;
@@ -33,16 +28,12 @@ interface SaveBookArgs {
 
 const resolvers = {
     Query: {
-        user: async (_parent: unknown, { id, username }: IUserArgs, context: any) => {
-            const foundUser = await User.findOne({
-                $or: [{ _id: context.user?._id || id }, { username: username }],
-            });
-
-            if (!foundUser) {
-                throw new Error('Cannot find a user with this id!');
+        me: async (_parent: unknown, _args: unknown, context: any) => {
+            if (context.user) {
+                return await User.findOne({ _id: context.user._id });
             }
 
-            return foundUser;
+            throw new AuthenticationError('Authentication error.');
         }
     },
     Mutation: {
